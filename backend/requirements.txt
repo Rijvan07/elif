@@ -5,3 +5,4 @@ pymysql
 python-dotenv
 email-validator
 reportlab
+psycopg2-binary
