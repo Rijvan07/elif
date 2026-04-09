@@ -30,13 +30,9 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-actions">
-        {user ? (
+        {user && (
           <button className="btn-secondary" onClick={handleLogout}>
             Logout
-          </button>
-        ) : (
-          <button className="btn-secondary" onClick={() => navigate("/login")}>
-            Login
           </button>
         )}
       </div>

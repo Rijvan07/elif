@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import Base, engine
-from .routes import assessment, auth, results
+from .routes import admin, assessment, auth, results
 
 load_dotenv()
 
@@ -25,6 +25,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(auth.router)
 app.include_router(assessment.router)
 app.include_router(results.router)
+app.include_router(admin.router)
 
 
 @app.get("/")

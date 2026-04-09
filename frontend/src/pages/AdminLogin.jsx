@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Popup from "../components/Popup";
 import api from "../services/api";
 
-export default function Login() {
+export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState({ message: "", type: "success" });
@@ -18,7 +18,6 @@ export default function Login() {
       setPopup({ message: "Email is required.", type: "error" });
       return;
     }
-
     if (!validateEmail(email)) {
       setPopup({ message: "Please enter a valid email.", type: "error" });
       return;
@@ -26,12 +25,14 @@ export default function Login() {
 
     try {
       setLoading(true);
-      const { data } = await api.post("/login", { email });
-      localStorage.setItem("elif_user", JSON.stringify(data.user));
-      setPopup({ message: "Login successful.", type: "success" });
-      setTimeout(() => navigate("/test"), 800);
+      const { data } = await api.post("/admin/login", { email });
+      localStorage.setItem("elif_admin", JSON.stringify({ email: data.email }));
+      setPopup({ message: data.message || "Welcome.", type: "success" });
+      setTimeout(() => navigate("/admin"), 600);
     } catch (error) {
-      const msg = error?.response?.data?.detail || "Email address not matched!";
+      const msg =
+        error?.response?.data?.detail ||
+        "Unable to sign in. Check that your email is listed in ADMIN_EMAILS on the server.";
       setPopup({ message: msg, type: "error" });
     } finally {
       setLoading(false);
@@ -39,25 +40,27 @@ export default function Login() {
   };
 
   return (
-    <main className="page auth-page">
+    <main className="page auth-page admin-auth">
       <section className="auth-card glass-card">
-        <h2>Welcome Back</h2>
-        <p>Login using your registered email.</p>
+        <p className="admin-badge">Admin</p>
+        <h2>Analytics sign-in</h2>
+        <p>Enter your authorized admin email. Only today&apos;s assessment data is shown.</p>
 
         <form onSubmit={handleSubmit}>
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder="Admin email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="username"
           />
           <button className="btn-primary" disabled={loading}>
-            {loading ? "Signing in..." : "Login"}
+            {loading ? "Signing in..." : "Open dashboard"}
           </button>
         </form>
 
-        <p className="helper-text">
-          <Link to="/register">Register here</Link> | <Link to="/admin/login">Admin Login</Link>
+        <p className="helper-text admin-helper">
+          Participant login: <Link to="/login">user sign-in</Link>
         </p>
       </section>
 

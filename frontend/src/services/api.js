@@ -7,4 +7,22 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use((config) => {
+  const path = config.url || "";
+  if (path.includes("/admin/") && !path.includes("/admin/login")) {
+    try {
+      const raw = localStorage.getItem("elif_admin");
+      if (raw) {
+        const { email } = JSON.parse(raw);
+        if (email) {
+          config.headers["X-Admin-Email"] = email;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return config;
+});
+
 export default api;
